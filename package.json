@@ -1,0 +1,27 @@
+{
+  "name": "mi-primer-api",
+  "version": "1.0.0",
+  "description": "mi primer api",
+  "main": "main.js",
+  "scripts": {
+    "dev": "nodemon main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "API",
+    "Backend",
+    "Mongo"
+  ],
+  "author": "Juan Canepa",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.19.2",
+    "express-validator": "^7.0.1",
+    "mongodb": "^6.5.0",
+    "mongoose": "^8.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
