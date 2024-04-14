@@ -1,49 +1,66 @@
 const { Router } = require("express")
 const Product = require("../models/products.model")
+const { createProduct, findAllProducts, findProductById, updateProductById, deleteProductById } = require("../controllers/product.controller")
+const { body, param } = require('express-validator');
+const { expressValidations } = require('../middlewares/common.validations');
+const { verify } = require("jsonwebtoken");
+const { verifyJWT } = require("../middlewares/auth.validations")
 
 const productRouter = Router()
 
-productRouter.get('/findAll', async (req, res) => {
-    const products = await Product.find()
+//Create
+productRouter.post("/createProduct", [
+    body("marca", "Debe mandar una marca").notEmpty(),
+    body("producto", "Debe mandar un producto").notEmpty(),
+    body("precio", "Debe mandar un precio").notEmpty(),
+    body("descripcion", "Debe mandar una descripcion").notEmpty(),
+    body("peso", "Debe mandar un peso").notEmpty(),
+    body("cantidad", "Debe mandar una cantidad").notEmpty(),
+    body("vencimiento", "Debe mandar un vencimiento").notEmpty(),
+    body("categoria", "Debe mandar una categoria").notEmpty()
+],
+    verifyJWT,
+    expressValidations,
+    createProduct
+);
 
-    res.status(200)
-    res.json(products)
-})
+//ReadAll
+productRouter.get("/findAllProduct", findAllProducts)
 
-// productRouter.get('/by-id/:id/filter', y buscamos precio
-productRouter.get('/by-id/:id', async (req, res) =>{
-    const product = await Product.findById(req.params.id)
+//ReadByID
+productRouter.get("/findProductById/:id", [
+    param("id", "Debe mandar un Id valido").isMongoId()
+],
+    expressValidations,
+    findProductById
+);
 
-    if(product == null) {
-        res.status(400)
-        return res.json({ message: "Producto no encontrado "})
-    }
+productRouter.put("/updateProductById/:id", [
+    param("id", "Debe mandar un Id válido").isMongoId(),
+    body("marca", "Debe mandar una marca").isString().optional(),
+    body("producto", "Debe mandar un producto").isString().optional(),
+    body("precio", "Debe mandar un precio").isNumeric().optional(),
+    body("descripcion", "Debe mandar una descripción").isString().optional(),
+    body("peso", "Debe mandar un peso").isString().optional(),
+    body("cantidad", "Debe mandar una cantidad").isString().optional(),
+    body("vencimiento", "Debe mandar un vencimiento válido").toDate().custom((value, { req }) => {
+        if (isNaN(value.getTime())) {
+            throw new Error('La fecha de vencimiento no es válida');
+        }
+        return true;
+    }).optional(),
+    body("categoria", "Debe mandar una categoría").isString().optional()
+],
+    expressValidations,
+    updateProductById
+);
 
-    res.status(200)
-    res.json(product)
-})
-
-productRouter.post("/create", async (req, res) => {
-    const {
-        nombre,
-        precio,
-        descripcion,
-        peso,
-        sabor
-    } = req.body
-
-    const product = new Product({
-        nombre: nombre,
-        precio: precio,
-        descripcion: descripcion,
-        peso: peso,
-        sabor: sabor,
-    }
-    )
-
-    await product.save()
-
-    res.json(product)
-})
+//Delete
+productRouter.delete("/deleteProductById/:id", [
+    param("id", "Debe mandar un Id valido").isMongoId()
+],
+    expressValidations,
+    deleteProductById
+);
 
 module.exports = productRouter;

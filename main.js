@@ -1,7 +1,7 @@
 //Importo express a mi proyecto
 const express = require('express')
 const mongoose = require("mongoose")
-const productRouter = require('./src/routes/auth.route')
+const productRouter = require('./src/routes/product.route')
 const categoriaRouter = require('./src/routes/categoria.route')
 const authRouter = require('./src/routes/auth.route')
 const cors = require("cors")

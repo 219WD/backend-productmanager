@@ -2,7 +2,12 @@ const mongoose = require("mongoose")
 
 const productSchema = mongoose.Schema(
     {
-        nombre: {
+        marca: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        producto: {
             type: String,
             required: true,
             trim: true
@@ -21,7 +26,17 @@ const productSchema = mongoose.Schema(
             required: true,
             trim: true
         },
-        sabor: {
+        cantidad: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        vencimiento: {
+            type: Date,
+            required: true,
+            trim: true
+        },
+        categoria: {
             type: String,
             required: true,
             trim: true
