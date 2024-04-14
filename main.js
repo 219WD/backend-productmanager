@@ -4,9 +4,13 @@ const mongoose = require("mongoose")
 const productRouter = require('./src/routes/auth.route')
 const categoriaRouter = require('./src/routes/categoria.route')
 const authRouter = require('./src/routes/auth.route')
+const cors = require("cors")
+
+require("dotenv").config()
 
 //Creo mi aplicacion con la funcion express
 const app = express()
+app.use(cors())
 
 //Defino un puerto en donde se ejecutara mi aplicacion
 const port = 8000
@@ -18,7 +22,7 @@ app.use("/categorias", categoriaRouter)
 app.use("/auth", authRouter)
 
 //Nuestra app backend esta en marcha
-mongoose.connect("mongodb+srv://macgunmanmc:EAvvsvNtBO2jKSgL@productmanager.quuq3cy.mongodb.net/?retryWrites=true&w=majority&appName=productmanager")
+mongoose.connect(process.env.MONGO_URI)
     .then(() => {
         console.log("Conectado a la DB")
         app.listen(port, () => {
