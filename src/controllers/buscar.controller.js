@@ -6,18 +6,17 @@ const Producto = require("../models/products.model");
 
 const coleccionesPermitidas = ["categories", "products"];
 
-//funcion para buscar por categoria
 const buscarCategorias = async (termino = "", res = response) => {
-  //verificar si me mandó el id
+  // Verificar si me mandó el id
   const isMongoID = ObjectId.isValid(termino);
   if (isMongoID) {
-    const categoria = await Categoria.findById(id);
+    const categoria = await Categoria.findById(termino);
     return res.json({
       results: categoria ? [categoria] : [],
     });
   }
 
-  //si la busqueda se hace por el nombre
+  // Si la búsqueda se hace por el nombre
   const regex = new RegExp(termino, "i");
 
   const categorias = await Categoria.find({
@@ -30,25 +29,28 @@ const buscarCategorias = async (termino = "", res = response) => {
   });
 };
 
-//Funcion para buscar productos
 const buscarProductos = async (termino = "", res = response) => {
-  //verificar si me mandó el id
+  // Verificar si me mandó el id
   const isMongoID = ObjectId.isValid(termino);
   if (isMongoID) {
-    const producto = await Producto.findById(id);
+    const producto = await Producto.findById(termino);
     return res.json({
       results: producto ? [producto] : [],
     });
   }
-  //si la busqueda se hace por el nombre
+
+  // Si la búsqueda se hace por marca, producto, categoría o vencimiento
   const regex = new RegExp(termino, "i");
 
   const productos = await Producto.find({
-    nombre: regex,
+    $or: [
+      { marca: regex },
+      { producto: regex },
+      { categoria: regex },
+      { vencimiento: regex },
+    ],
     estado: true,
-  })
-    .populate("marca", "marca")
-    .populate("producto", "producto");
+  }).populate("marca", "marca").populate("producto", "producto");
 
   res.json({
     results: productos,
@@ -58,14 +60,14 @@ const buscarProductos = async (termino = "", res = response) => {
 const buscar = async (req = request, res = response) => {
   const { coleccion, termino } = req.params;
 
-  //ver si la coleccion esta en las permitidas
+  // Ver si la coleccion esta en las permitidas
   if (!coleccionesPermitidas.includes(coleccion)) {
     return res.status(400).json({
       msg: `Las colecciones permitidas son: ${coleccionesPermitidas}`,
     });
   }
 
-  //verificar que coleccion es la que se recibio
+  // Verificar qué colección se recibió
   switch (coleccion) {
     case "categories":
       buscarCategorias(termino, res);
@@ -76,7 +78,7 @@ const buscar = async (req = request, res = response) => {
 
     default:
       res.status(500).json({
-        msg: "No hay busqueda para esta acción",
+        msg: "No hay búsqueda para esta acción",
       });
       break;
   }
