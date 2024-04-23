@@ -1,9 +1,14 @@
-const { body } = require("express-validator")
-const Product = require("../models/products.model")
-const Category = require("../models/categoria.model")
+const { validationResult } = require('express-validator');
+const Product = require("../models/products.model");
+const Category = require("../models/categoria.model");
 
 const createProduct = async (req, res) => {
     const { marca, producto, precio, descripcion, peso, cantidad, vencimiento, categoria } = req.body;
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
 
     try {
         const category = await Category.findById(categoria);
@@ -24,12 +29,17 @@ const createProduct = async (req, res) => {
         });
 
         const savedProduct = await newProduct.save();
-        res.json({ ...savedProduct.toObject(), categoria: categoryName });    } catch (error) {
+
+        // Obtener el nombre de la categoría
+        const categoryName = category.nombre;
+
+        // Enviar la respuesta con el nombre de la categoría
+        res.json({ ...savedProduct.toObject(), categoria: categoryName });
+    } catch (error) {
         console.error(error);
         res.status(500).send('Error al crear el producto');
     }
 };
-
 
 
 const findAllProducts = async (req, res) => {
