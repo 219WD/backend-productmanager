@@ -25,20 +25,6 @@ const userSchema = mongoose.Schema(
             minLength: 8,
             maxLength: 64
         },
-        nombre: {
-            type: String,
-            required: true,
-            trim: true,
-            minLength: 3,
-            maxLength: 20
-        },
-        apellido: {
-            type: String,
-            required: true,
-            trim: true,
-            minLength: 3,
-            maxLength: 20
-        },
         esEmpleado: {
             type: Boolean,
             require: true,

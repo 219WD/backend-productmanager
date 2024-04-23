@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const { Schema, model } = require("mongoose");
 
 const productSchema = mongoose.Schema(
     {
@@ -37,7 +38,8 @@ const productSchema = mongoose.Schema(
             trim: true
         },
         categoria: {
-            type: String,
+            type: Schema.Types.ObjectId,
+            ref: "Categoria",
             required: true,
             trim: true
         }

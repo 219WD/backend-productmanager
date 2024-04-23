@@ -9,9 +9,7 @@ const registerUser = async (req, res) => {
     const {
         username,
         password,
-        email,
-        nombre,
-        apellido
+        email
     } = req.body
 
     //Logica de encriptacion
@@ -22,9 +20,7 @@ const registerUser = async (req, res) => {
     const user = new User({
         username,
         password: hashedPassword,
-        email,
-        nombre,
-        apellido
+        email
     })
 
     await user.save()

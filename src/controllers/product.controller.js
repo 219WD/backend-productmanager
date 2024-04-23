@@ -24,8 +24,7 @@ const createProduct = async (req, res) => {
         });
 
         const savedProduct = await newProduct.save();
-        res.json(savedProduct);
-    } catch (error) {
+        res.json({ ...savedProduct.toObject(), categoria: categoryName });    } catch (error) {
         console.error(error);
         res.status(500).send('Error al crear el producto');
     }
@@ -68,7 +67,7 @@ const updateProductById = async (req, res) => {
         peso: req.body.peso, 
         cantidad: req.body.cantidad, 
         vencimiento: req.body.vencimiento, 
-        categoria: req.body.categoria 
+        categoria: req.body.categoria
     })
 
 
