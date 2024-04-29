@@ -36,7 +36,6 @@ const createProduct = async (req, res) => {
         // Enviar la respuesta con el nombre de la categoría
         res.json({ ...savedProduct.toObject(), categoria: categoryName });
     } catch (error) {
-        console.error(error);
         res.status(500).send('Error al crear el producto');
     }
 };

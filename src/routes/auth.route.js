@@ -1,13 +1,13 @@
-const { Router } = require("express")
-const { check, header } = require('express-validator');
-const { registerUser, loginUser, verifyJWT } = require("../controllers/auth.controller");
+const { Router } = require("express");
+const { check } = require('express-validator');
+const { registerUser, loginUser, requestResetPassword, resetPassword } = require("../controllers/auth.controller");
 const { expressValidations } = require("../middlewares/common.validations");
 
-const authRouter = Router()
+const authRouter = Router();
 
-authRouter.post("/registro",
+authRouter.post(
+    "/registro",
     [
-        //Validar cuerpo para que no llegue vacio por ej
         check('username', "Debe mandar nombre de usuario").notEmpty(),
         check('username', "Debe ser alphanumerico").isAlphanumeric(),
         check('password', "Debe mandar una contraseña").notEmpty(),
@@ -17,7 +17,7 @@ authRouter.post("/registro",
     ],
     expressValidations,
     registerUser
-)
+);
 
 authRouter.post(
     "/login",
@@ -29,6 +29,25 @@ authRouter.post(
     ],
     expressValidations,
     loginUser
-)
+);
+
+authRouter.post(
+    "/reset-password-request",
+    [
+        check('email', "Debe mandar un mail").notEmpty(),
+        check('email', "Debe tener formato de mail").isEmail(),
+    ],
+    expressValidations,
+    requestResetPassword
+);
+
+authRouter.post(
+    "/reset-password/:token", 
+    [
+        check('newPassword', "Debe mandar una nueva contraseña").notEmpty(),
+    ],
+    expressValidations,
+    resetPassword
+);
 
 module.exports = authRouter;
