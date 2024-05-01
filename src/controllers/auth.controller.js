@@ -123,7 +123,7 @@ const requestResetPassword = async (req, res) => {
       }
     });
 
-    const resetPasswordLink = `http://localhost:5173/reset-password/${token}`;
+    const resetPasswordLink = `https://stockmanager-oficial.vercel.app/reset-password/${token}`;
 
     await transporter.sendMail({
       from: 'stock.manager.soporte@gmail.com',
