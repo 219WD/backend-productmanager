@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+const productRouter = require('./src/routes/product.route')
 const categoriaRouter = require('./src/routes/categoria.route');
 const authRouter = require('./src/routes/auth.route');
 const { buscar } = require('./src/controllers/buscar.controller');
