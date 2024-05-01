@@ -6,19 +6,19 @@ const { JWT_SECRET } = require("../common/constants")
 require("dotenv").config()
 
 const registerUser = async (req, res) => {
-  //Validando si encontramos algun error
-
   const {
     username,
     password,
     email
   } = req.body
 
-  //Logica de encriptacion
+  if (password.length < 8) {
+    return res.status(400).json({ message: 'La contraseña debe tener al menos 8 caracteres.' });
+  }
+
   const salt = bcrypt.genSaltSync(5)
   const hashedPassword = bcrypt.hashSync(password, salt)
 
-  //logica de creacion de usuario
   const user = new User({
     username,
     password: hashedPassword,
@@ -37,7 +37,6 @@ const loginUser = async (req, res) => {
     password
   } = req.body
 
-  //Existe el usuario?
   const user = await User.findOne({ username })
 
   if (user === null) {
@@ -45,16 +44,13 @@ const loginUser = async (req, res) => {
     return res.json({ message: "Usuario no encontrado" })
   }
 
-  //Verifica si la contraseña es igual a la que sea creo en el registro
   const isMatch = bcrypt.compareSync(password, user.password);
 
-  //Error 401 sin autorizacion
   if (!isMatch) {
     res.status(401)
     return res.json({ message: "Sin autorizacion" })
   }
 
-  //Firmo el JWT
   const token = jwt.sign({
     id: user._id,
     username: user.username,
@@ -70,22 +66,18 @@ const resetPassword = async (req, res) => {
     const { token } = req.params;
     const { newPassword } = req.body;
 
-    // Verificar el token
     const decoded = jwt.verify(token, JWT_SECRET);
     const { userId } = decoded;
 
-    // Buscar el usuario con el userId del token
     const userToUpdate = await User.findById(userId);
     if (!userToUpdate) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
-    // Actualizar la contraseña del usuario
     const hashedPassword = bcrypt.hashSync(newPassword, 5);
     userToUpdate.password = hashedPassword;
     await userToUpdate.save();
 
-    // Enviar respuesta exitosa al front-end
     res.status(200).json({ message: 'Contraseña cambiada exitosamente' });
 
   } catch (error) {
@@ -102,17 +94,14 @@ const requestResetPassword = async (req, res) => {
   try {
     const { email } = req.body;
 
-    // Verificar si el usuario existe
     const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
-    // Generar token de restablecimiento de contraseña
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
 
-    // Enviar correo electrónico con el enlace del token
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 465,
@@ -135,7 +124,6 @@ const requestResetPassword = async (req, res) => {
              <a href="${resetPasswordLink}">Restablecer Contraseña</a>`
     });
 
-    // Respuesta exitosa al front-end
     res.status(200).json({ message: 'Correo electrónico enviado con instrucciones para restablecer la contraseña.' });
 
   } catch (error) {
