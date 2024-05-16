@@ -31,7 +31,6 @@ app.use('/selectedFields', selectedFields)
 app.use('/vencimiento', vencimiento)
 
 
-
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
         console.log('Conectado a la base de datos');
