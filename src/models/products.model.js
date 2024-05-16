@@ -5,31 +5,26 @@ const productSchema = mongoose.Schema(
     {
         marca: {
             type: String,
-            required: true,
             trim: true
         },
         producto: {
             type: String,
-            required: true,
             trim: true
         },
         precio: {
-            type: Number,
-            required: true
+            type: String,
+            trim: true
         },
         descripcion: {
             type: String,
-            required: false,
             trim: true
         },
         peso: {
             type: String,
-            required: true,
             trim: true
         },
         cantidad: {
             type: String,
-            required: true,
             trim: true
         },
         vencimiento: {
@@ -41,6 +36,11 @@ const productSchema = mongoose.Schema(
             type: Schema.Types.ObjectId,
             ref: "Categoria",
             required: true,
+            trim: true
+        },
+        selectedFields: {
+            type: Schema.Types.Boolean,
+            ref: "Field",
             trim: true
         }
     }

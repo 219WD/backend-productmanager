@@ -1,44 +1,43 @@
-// const { Router } = require("express");
-// const mercadopago = require("mercadopago");
-// const dotenv = require("dotenv");
-// dotenv.config();
-// const Mercado_Pago = Router();
+const { Router } = require("express");
+const { MercadoPagoConfig, Preference } = require("mercadopago");
+const dotenv = require("dotenv");
+dotenv.config();
+const Mercado_Pago = Router();
 
-// mercadopago.configure({
-//   access_token: process.env.ACCESS_TOKE || "",
-// });
+Mercado_Pago.post("/", async (req, res) => {
+    const servicio = req.body;
+    const client = new MercadoPagoConfig({
+        accessToken: process.env.ACCESS_TOKEN
+    })
+    try {
+        const preference = new Preference(client)
+        const result = await preference.create({
+            body: {
+                items: [
+                    {
+                        title: servicio.title,
+                        unit_price: servicio.unit_price,
+                        currency_id: servicio.currency_id,
+                        quantity: servicio.quantity,
+                    },
+                ],
 
-// Mercado_Pago.post("/", async (req, res) => {
-//   const servicio = req.body;
+                back_urls: {
+                    success: "https://stockmanager-oficial.vercel.app/",
+                    failure: "https://stockmanager-oficial.vercel.app/fallo",
+                },
 
-//   try {
-//     const preference = {
-//       items: [
-//         {
-//           title: servicio.nombre,
-//           unit_price: servicio.precio,
-//           currency_id: "ARS",
-//           quantity: servicio.cantidad,
-//         },
-//       ],
+                auto_return: "approved",
+            }
+        })
 
-//       back_urls: {
-//         success: "http://localhost:5174/",
-//         failure: "http://localhost:8000/fallo",
-//       },
+        console.log(result);
+        res.status(200).json({ result: result.init_point });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json(error.message);
+    }
+});
 
-//       auto_return: "approved",
-//     };
+module.exports = Mercado_Pago;
 
-//     const respuesta = await mercadopago.preferences.create(preference);
-//     console.log(respuesta);
-//     res.status(200).json(respuesta.response.init_point);
-//   } catch (error) {
-//     console.error(error.message);
-//     res.status(500).json(error.message);
-//   }
-// });
-
-// module.exports = Mercado_Pago;
-
-//No tuve suerte para integrar mercadopago aun, pero como no descarte la opcion de solucionarlo, decidi no eliminarlo.
