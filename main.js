@@ -8,7 +8,7 @@ const authRouter = require('./src/routes/auth.route');
 const { buscar } = require('./src/controllers/buscar.controller');
 const adminRouter = require('./src/routes/admin.route');
 const Mercado_Pago = require("./src/routes/Mercado_Pago_Router");
-const selectedFields = require("./src/routes/fields.route");
+const selectedFields = require('./src/routes/fields.route');
 const vencimiento = require("./src/routes/vencimiento.route"); 
 
 require('dotenv').config();
