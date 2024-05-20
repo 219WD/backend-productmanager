@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 const { Schema, model } = require("mongoose");
 
-const SelectedFields = mongoose.Schema(
+const selectedFields = mongoose.Schema(
     {
         marca: {
             type: Boolean
@@ -30,6 +30,6 @@ const SelectedFields = mongoose.Schema(
     }    
 );
 
-const Field = mongoose.model('Field', SelectedFields)
+const Field = mongoose.model('Field', selectedFields)
 
 module.exports = Field
