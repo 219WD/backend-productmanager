@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const SelectedFields = require("../models/selectedFields.model");
+const SelectedFields = require("./../models/selectedFields.model");
 
 const selectedFieldsRouter = Router();
 
